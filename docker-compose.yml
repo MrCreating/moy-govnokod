@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  php:
+    build:
+      dockerfile: ./docker/images/php/Dockerfile
+      context: .
+    tty: true
+    platform: linux
+    restart: on-failure
+    container_name: php
+    env_file:
+      - .env
+    volumes:
+      - ./:/project
+    links:
+      - memcached
+  nginx:
+    build:
+      dockerfile: ./docker/images/nginx/Dockerfile
+      context: .
+    tty: true
+    restart: on-failure
+    platform: linux
+    container_name: nginx
+    env_file:
+      - .env
+    ports:
+      - '80:80'
+    volumes:
+      - ./:/project
+      - ./docker/config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/config/nginx/project.conf:/etc/nginx/project.conf
+    links:
+      - php
+      - memcached
+  memcached:
+    build:
+      dockerfile: ./docker/images/memcached/Dockerfile
+      context: .
+    tty: true
+    restart: on-failure
+    platform: linux
+    container_name: memcached
+    env_file:
+      - .env
+    volumes:
+      - ./:/project
