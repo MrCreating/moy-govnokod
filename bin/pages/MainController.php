@@ -3,11 +3,14 @@
 namespace l\pages;
 
 use l\objects\BaseController;
+use l\objects\DataBase;
 
 class MainController extends BaseController
 {
-    function index(): bool
+    function index(): string
     {
-        return true;
+        $db = new DataBase('users');
+
+        $db->deleteByField(['user_id' => 1]);
     }
 }

@@ -15,7 +15,7 @@ abstract class BaseController extends BaseObject
 
     private string $title = '';
 
-    abstract function index (): bool;
+    abstract function index (): string;
 
     public function enter (): bool
     {
