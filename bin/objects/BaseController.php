@@ -10,13 +10,11 @@ abstract class BaseController extends BaseObject
 {
     protected string $url = '';
 
-    private array $js = [];
-    private array $css = [];
-
-    private string $title = '';
-
     abstract function index (): string;
 
+    /**
+     * @return bool
+     */
     public function enter (): bool
     {
         $link = explode('/', $this->url);
@@ -32,6 +30,36 @@ abstract class BaseController extends BaseObject
         if (is_string($result)) {
             echo $result;
         }
+        return true;
+    }
+
+    /**
+     * @param string $path
+     * @param array $params
+     * @return string
+     */
+    public function render (string $path, array $params = []): string
+    {
+        $filePath = __DIR__ . '/../design/' . $path . '.php';
+
+        if (!file_exists($filePath)) {
+            return '';
+        }
+
+        ob_start();
+        extract($params);
+        require $filePath;
+        return ob_get_clean();
+    }
+
+    /**
+     * @param string $path
+     * @param array $params
+     * @return bool
+     */
+    public function show (string $path, array $params = []): bool
+    {
+        echo $this->render($path, $params);
         return true;
     }
 }
