@@ -9,7 +9,7 @@ class ErrorController extends BaseController
     /**
      * @return bool
      */
-    function index(): bool
+    function index(): string
     {
         return '';
     }
