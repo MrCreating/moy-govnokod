@@ -62,4 +62,14 @@ abstract class BaseController extends BaseObject
         echo $this->render($path, $params);
         return true;
     }
+
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public function redirect (string $url = ''): bool
+    {
+        header("Location: $url");
+        return true;
+    }
 }

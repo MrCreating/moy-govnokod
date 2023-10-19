@@ -64,10 +64,10 @@ class PasswordManager extends DataBase
      * @param $password
      * @return bool
      */
-    public function isPasswordCorrect ($userId, $password): bool
+    public function isPasswordCorrect (int $userId, string $password): bool
     {
         $user = $this->findBy('user_id', $userId);
 
-        return password_verify($user['credential'], $password);
+        return password_verify($password, $user[0]['credential']);
     }
 }

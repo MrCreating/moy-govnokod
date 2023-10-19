@@ -4,11 +4,10 @@ namespace l\pages;
 
 use l\objects\AccountManager;
 use l\objects\BaseController;
-use l\objects\DataBase;
 
-class MainController extends BaseController
+class UserController extends BaseController
 {
-    public function index(): string
+    function index(): string
     {
         if (!AccountManager::isLogged()) {
             return (string) $this->redirect('/auth');
@@ -17,6 +16,15 @@ class MainController extends BaseController
             return (string) $this->redirect('/banned');
         }
 
-        return (string) $this->redirect('/user');
+        return $this->render('user', [
+            'user' => AccountManager::getUser()
+        ]);
+    }
+
+    public function logout (): string
+    {
+        $_SESSION = [];
+
+        return (string) $this->redirect('/auth');
     }
 }

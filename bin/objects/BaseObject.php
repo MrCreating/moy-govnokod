@@ -20,10 +20,10 @@ class BaseObject
      * @param array $params
      * @throws Exception
      */
-    public function __construct(array $params = [])
+    public function __construct(array $params = [], bool $strictLoad = true)
     {
         foreach ($params as $key => $value) {
-            if (!isset($this->{$key})) {
+            if (!isset($this->{$key}) && $strictLoad) {
                 throw new Exception("Key $key is not set in object");
             }
 

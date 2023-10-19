@@ -2,6 +2,8 @@
 
 namespace l;
 
+session_start();
+
 spl_autoload_register(function ($namespace) {
     $path = explode('\\', $namespace);
 

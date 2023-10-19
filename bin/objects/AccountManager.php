@@ -61,4 +61,23 @@ class AccountManager extends DataBase
 
         return (int) $_SESSION['user_id'];
     }
+
+    /**
+     * @param string $login
+     * @param string $password
+     * @return bool
+     */
+    public static function auth (string $login, string $password): bool
+    {
+        $pm = new PasswordManager();
+
+        $user = $pm->findBy('login', $login);
+
+        if (isset($user[0]) && $pm->isPasswordCorrect($user[0]['user_id'], $password)) {
+            $_SESSION['user_id'] = $user[0]['user_id'];
+            return true;
+        }
+
+        return false;
+    }
 }

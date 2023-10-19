@@ -7,7 +7,7 @@
 </head>
 <style>
     body, html {
-        background-color: lightgrey !important;
+        background-color: #eeeeee !important;
     }
 </style>
 <body>
