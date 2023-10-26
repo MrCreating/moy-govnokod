@@ -41,12 +41,12 @@ class PasswordManager extends DataBase
     }
 
     /**
-     * @param $userId
-     * @param $password
-     * @param $update
+     * @param int $userId
+     * @param string $password
+     * @param bool $update
      * @return false|string|null
      */
-    public function createPasswordHash ($userId, $password, $update = false)
+    public function createPasswordHash (int $userId, string $password, bool $update = false)
     {
         $hash = password_hash($password, PASSWORD_BCRYPT);
 
@@ -69,5 +69,19 @@ class PasswordManager extends DataBase
         $user = $this->findBy('user_id', $userId);
 
         return password_verify($password, $user[0]['credential']);
+    }
+
+    /**
+     * @return PasswordManager
+     */
+    public static function load (): PasswordManager
+    {
+        static $pm;
+
+        if (!isset($pm)) {
+            $pm = new static();
+        }
+
+        return $pm;
     }
 }

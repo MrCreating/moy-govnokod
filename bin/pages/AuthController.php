@@ -6,12 +6,15 @@ use l\objects\AccountManager;
 use l\objects\BaseController;
 use l\objects\Form;
 use l\objects\LoginForm;
+use l\objects\PasswordManager;
 
 class AuthController extends BaseController
 {
     public array $errors = [
         '1' => 'Заполните все поля',
-        '2' => 'Неверный логин или пароль'
+        '2' => 'Неверный логин или пароль',
+        '3' => 'Пароли не совпадают',
+        '4' => 'Старый пароль некорректен'
     ];
 
     /**
@@ -50,5 +53,29 @@ class AuthController extends BaseController
         }
 
         return (string) $this->redirect('/auth?err=2');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function changePassword (): string
+    {
+        $form = Form::load();
+
+        if (empty($form->old_password) || empty($form->password) || empty($form->repeat_password)) {
+            return $this->json(['error' => $this->errors['1']]);
+        }
+
+        if ($form->password !== $form->repeat_password) {
+            return $this->json(['error' => $this->errors['3']]);
+        }
+
+        if (PasswordManager::load()->isPasswordCorrect(AccountManager::getUserId(), $form->old_password)) {
+            return $this->json([
+                'ok' => (int) PasswordManager::load()->createPasswordHash(AccountManager::getUserId(), $form->password, true)
+            ]);
+        } else {
+            return $this->json(['error' => $this->errors['4']]);
+        }
     }
 }

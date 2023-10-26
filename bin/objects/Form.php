@@ -17,6 +17,10 @@ class Form extends BaseObject
         $string = explode("?", $_SERVER["REQUEST_URI"]);
         $parseString = $string[1] ?? '';
 
+        if (empty($parseString) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $parseString = file_get_contents('php://input');
+        }
+
         parse_str($parseString, $_REQUEST);
         $data = array_merge($_REQUEST, array_merge($_GET, $_POST));
 

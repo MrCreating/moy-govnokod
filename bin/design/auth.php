@@ -10,6 +10,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="/sources/css/materialize.min.css">
+        <script src="/sources/js/jquery.min.js"></script>
         <script src="/sources/js/materialize.min.js"></script>
         <title>Авторизация</title>
     </head>

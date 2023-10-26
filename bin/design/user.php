@@ -2,7 +2,9 @@
 <html>
 <head>
     <link rel="stylesheet" href="/sources/css/materialize.min.css">
+    <script src="/sources/js/jquery.min.js"></script>
     <script src="/sources/js/materialize.min.js"></script>
+    <script src="/sources/js/pages/user.js"></script>
     <title>Информация о пользователе <?= $user['login']; ?></title>
 </head>
 <style>
@@ -24,5 +26,23 @@
         </ul>
     </div>
 </nav>
+<div class="card" style="text-align: center; padding: 30px;">
+    <form id="changePassword" method="post" action="/auth/changePassword">
+        <div class="input-field" aria-required="true">
+            <input name="old_password" id="old_password" type="password" class="validate">
+            <label for="old_password">Old password</label>
+        </div>
+        <div class="input-field" aria-required="true">
+            <input name="password" id="password" type="password" class="validate">
+            <label for="password">New password</label>
+        </div>
+        <div class="input-field" aria-required="true">
+            <input name="repeat_password" id="repeat_password" type="password" class="validate">
+            <label for="repeat_password">Repeat password</label>
+        </div>
+        <button class="btn waves-effect waves-light" type="submit" name="action">CHANGE PASSWORD
+        </button>
+    </form>
+</div>
 </body>
 </html>

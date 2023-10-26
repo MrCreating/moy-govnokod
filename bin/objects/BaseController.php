@@ -72,4 +72,10 @@ abstract class BaseController extends BaseObject
         header("Location: $url");
         return true;
     }
+
+    public function json (array $responseJson): string
+    {
+        header('Content-Type: application/json');
+        return json_encode($responseJson, JSON_PRETTY_PRINT);
+    }
 }
