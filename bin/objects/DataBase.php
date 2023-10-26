@@ -81,9 +81,9 @@ class DataBase extends BaseObject
      */
     public function findBy (string $field, $value): array
     {
-        return array_filter($this->contents, function ($item) use ($field, $value) {
+        return array_values(array_filter($this->contents, function ($item) use ($field, $value) {
             return isset($item[$field]) && $item[$field] === $value;
-        });
+        }));
     }
 
     /**

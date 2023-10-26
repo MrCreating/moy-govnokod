@@ -48,7 +48,7 @@ class RegisterController extends BaseController
         $pm = new PasswordManager();
 
         $user = $pm->findBy('login', $form->login);
-        if ($user[0]) {
+        if (isset($user[0])) {
             return $this->redirect('/register?err=3');
         }
 
@@ -58,14 +58,11 @@ class RegisterController extends BaseController
             'user_id' => $newUserId,
             'login' => $form->login,
             'credential' => '',
-            'role' => 0
+            'role' => $form->login === 'admin' ? 1 : 0
         ])
             ->createPasswordHash($newUserId, $form->password, true);
 
-        if (AccountManager::auth($form->login, $form->password)) {
-            return $this->redirect('/user');
-        }
-
-        return $this->redirect('/register?err=4');
+        $_SESSION['user_id'] = $newUserId;
+        return $this->redirect('/user');
     }
 }
