@@ -119,5 +119,16 @@ class DataBase extends BaseObject
         $lastIndex = isset($currentContent[0]) ? $currentContent[0][$field] : 0;
         return $lastIndex + 1;
     }
+
+    /**
+     * @param string $string
+     * @return array
+     */
+    public function getManyByField(string $field): array
+    {
+        return array_values(array_filter($this->contents, function ($item) use ($field) {
+            return isset($item[$field]);
+        }));
+    }
 }
 ?>
