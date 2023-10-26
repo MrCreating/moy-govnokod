@@ -80,4 +80,39 @@ class AccountManager extends DataBase
 
         return false;
     }
+
+    /**
+     * @param int $role
+     * @return bool
+     */
+    public static function permitted (int $role): bool
+    {
+        if (!self::isLogged()) {
+            return false;
+        }
+
+        $user = self::getUser();
+        if (!$user) {
+            return false;
+        }
+
+        if ($user['role'] <= 0 && self::isBanned()) {
+            return false;
+        }
+
+        if (intval($user['role']) >= $role) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function logout (): bool
+    {
+        $_SESSION = [];
+        return true;
+    }
 }

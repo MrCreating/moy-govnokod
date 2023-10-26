@@ -10,10 +10,10 @@ class UserController extends BaseController
     function index(): string
     {
         if (!AccountManager::isLogged()) {
-            return (string) $this->redirect('/auth');
+            return $this->redirect('/auth');
         }
         if (AccountManager::isBanned()) {
-            return (string) $this->redirect('/banned');
+            return $this->redirect('/banned');
         }
 
         return $this->render('user', [
@@ -23,8 +23,8 @@ class UserController extends BaseController
 
     public function logout (): string
     {
-        $_SESSION = [];
+        AccountManager::logout();
 
-        return (string) $this->redirect('/auth');
+        return $this->redirect('/auth');
     }
 }

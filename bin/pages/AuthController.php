@@ -23,7 +23,7 @@ class AuthController extends BaseController
     public function index(): string
     {
         if (AccountManager::isLogged() || AccountManager::isBanned()) {
-            return (string) $this->redirect('/user');
+            return $this->redirect('/user');
         }
 
         $form = Form::load();
@@ -44,15 +44,15 @@ class AuthController extends BaseController
         $form = LoginForm::load();
 
         if (empty($form->login) || empty($form->password)) {
-            return (string) $this->redirect('/auth?err=1');
+            return $this->redirect('/auth?err=1');
         }
 
         $result = AccountManager::auth($form->login, $form->password);
         if ($result) {
-            return (string) $this->redirect('/user');
+            return $this->redirect('/user');
         }
 
-        return (string) $this->redirect('/auth?err=2');
+        return $this->redirect('/auth?err=2');
     }
 
     /**
@@ -72,7 +72,8 @@ class AuthController extends BaseController
 
         if (PasswordManager::load()->isPasswordCorrect(AccountManager::getUserId(), $form->old_password)) {
             return $this->json([
-                'ok' => (int) PasswordManager::load()->createPasswordHash(AccountManager::getUserId(), $form->password, true)
+                'ok' => (int) PasswordManager::load()
+                                ->createPasswordHash(AccountManager::getUserId(), $form->password, true)
             ]);
         } else {
             return $this->json(['error' => $this->errors['4']]);

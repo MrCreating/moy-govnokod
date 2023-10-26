@@ -11,10 +11,10 @@ class MainController extends BaseController
     public function index(): string
     {
         if (!AccountManager::isLogged()) {
-            return (string) $this->redirect('/auth');
+            return $this->redirect('/auth');
         }
         if (AccountManager::isBanned()) {
-            return (string) $this->redirect('/banned');
+            return $this->redirect('/banned');
         }
 
         return (string) $this->redirect('/user');

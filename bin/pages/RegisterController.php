@@ -38,18 +38,18 @@ class RegisterController extends BaseController
         $form = RegisterForm::load();
 
         if (empty($form->login) || empty($form->password) || empty($form->repeat_password)) {
-            return (string) $this->redirect('/register?err=1');
+            return $this->redirect('/register?err=1');
         }
 
         if ($form->password !== $form->repeat_password) {
-            return (string) $this->redirect('/register?err=2');
+            return $this->redirect('/register?err=2');
         }
 
         $pm = new PasswordManager();
 
         $user = $pm->findBy('login', $form->login);
         if ($user[0]) {
-            return (string) $this->redirect('/register?err=3');
+            return $this->redirect('/register?err=3');
         }
 
         $newUserId = $pm->i('user_id');
@@ -63,9 +63,9 @@ class RegisterController extends BaseController
             ->createPasswordHash($newUserId, $form->password, true);
 
         if (AccountManager::auth($form->login, $form->password)) {
-            return (string) $this->redirect('/user');
+            return $this->redirect('/user');
         }
 
-        return (string) $this->redirect('/register?err=4');
+        return $this->redirect('/register?err=4');
     }
 }

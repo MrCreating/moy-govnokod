@@ -8,6 +8,6 @@ class BannedController extends BaseController
 {
     function index(): string
     {
-        return 'ban';
+        return 'Your current user is banned.';
     }
 }
