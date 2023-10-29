@@ -114,9 +114,16 @@ class AdminController extends BaseController
             return $this->json(['error' => $this->errors['-6']]);
         }
 
+        $isBanned = 0;
+        if (!empty($newUserSettings->isBanned)) {
+            $isBanned = ((int) $newUserSettings->isBanned) >= 1 ? 1 : 0;
+        }
+
         $pm->updateItemBy('minPasswordLength', $newUserSettings->min_password_length, [
             'user_id' => $user['user_id']
         ])->updateItemBy('role', $userRole, [
+            'user_id' => $user['user_id']
+        ])->updateItemBy('is_banned', $isBanned, [
             'user_id' => $user['user_id']
         ]);
 

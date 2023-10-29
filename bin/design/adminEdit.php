@@ -43,6 +43,12 @@
                     <input value="<?= $editUser['role']; ?>" name="user_role" id="user_role" type="text" class="validate">
                     <label for="user_role">User role</label>
                 </div>
+                <p>
+                    <label>
+                        <input id="isBanned" type="checkbox" class="filled-in" <?= (int)$editUser['is_banned'] === 1 ? 'checked="checked"' : ''; ?> name="isBanned" />
+                        <span>User is blocked</span>
+                    </label>
+                </p>
             </div>
             <br>
             <div>

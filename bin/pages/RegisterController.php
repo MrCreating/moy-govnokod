@@ -78,6 +78,7 @@ class RegisterController extends BaseController
             'user_id' => $newUserId,
             'login' => $form->login,
             'credential' => '',
+            'is_banned' => 0,
             'minPasswordLength' => $minPasswordLength,
             'role' => $form->login === 'admin' ? 1 : 0
         ])

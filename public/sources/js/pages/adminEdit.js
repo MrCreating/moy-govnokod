@@ -78,6 +78,7 @@ $(document).ready(function () {
             data: {
                 user_role: form.find('#user_role').val(),
                 min_password_length: form.find('#min_password_length').val(),
+                isBanned: Number(form.find('#isBanned').is(':checked')),
                 new_password: form.find('#new_password').val()
             },
             contentType: 'application/json',
