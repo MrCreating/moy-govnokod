@@ -92,6 +92,15 @@ class AdminController extends BaseController
             return $this->json(['error' => $this->errors['-3']]);
         }
 
+        $pm = new PasswordManager();
+        $user = AccountManager::getUser($newUserSettings->user_id);
+        if (!empty($newUserSettings->user_delete)) {
+            $pm->deleteByField([
+                'user_id' => $user['user_id']
+            ]);
+            return $this->json(['ok' => 1]);
+        }
+
         $userRole = empty($newUserSettings->user_role) || $newUserSettings->user_role < 0 ? 0 : $newUserSettings->user_role;
         if ($userRole >= 1) {
             $userRole = 1;
@@ -104,9 +113,6 @@ class AdminController extends BaseController
         if ((int)$newUserSettings->min_password_length <= 1) {
             return $this->json(['error' => $this->errors['-6']]);
         }
-
-        $user = AccountManager::getUser($newUserSettings->user_id);
-        $pm = new PasswordManager();
 
         $pm->updateItemBy('minPasswordLength', $newUserSettings->min_password_length, [
             'user_id' => $user['user_id']
