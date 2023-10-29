@@ -4,6 +4,7 @@ namespace l\pages;
 
 use l\objects\AccountManager;
 use l\objects\BaseController;
+use l\objects\DataBase;
 use l\objects\Form;
 use l\objects\PasswordManager;
 use l\objects\RegisterForm;
@@ -14,9 +15,13 @@ class RegisterController extends BaseController
         '1' => 'Заполните все поля',
         '2' => 'Пароли не совпадают',
         '3' => 'Имя пользователя уже занято',
-        '4' => 'Ошибка при регистрации'
+        '4' => 'Ошибка при регистрации',
+        '5' => 'Минимальная длина пароля должна быть %i символов. У вас %s символов'
     ];
 
+    /**
+     * @throws \Exception
+     */
     function index(): string
     {
         if (AccountManager::isLogged() || AccountManager::isBanned()) {
@@ -25,8 +30,16 @@ class RegisterController extends BaseController
 
         $form = Form::load();
 
+        $errorText = '';
+        if (isset($form->err)) {
+            $errorText = $this->errors[$form->err];
+        }
+        if (isset($form->err) && (int)$form->err === 5 && isset($form->i) && isset($form->s)) {
+            $errorText = str_replace(['%i', '%s'], [$form->i, $form->s], $this->errors[5]);
+        }
+
         return $this->render('register', [
-            'err' => isset($form->err) ? $this->errors[$form->err] : ''
+            'err' => $errorText
         ]);
     }
 
@@ -45,6 +58,13 @@ class RegisterController extends BaseController
             return $this->redirect('/register?err=2');
         }
 
+        $projectSettings = (new DataBase('settings'))->all();
+        $minPasswordLength = (int) $projectSettings['min_password_length'];
+
+        if (strlen($form->password) < $minPasswordLength) {
+            return $this->redirect('/register?err=5&i=' . $minPasswordLength . '&s=' . strlen($form->password));
+        }
+
         $pm = new PasswordManager();
 
         $user = $pm->findBy('login', $form->login);
@@ -58,6 +78,7 @@ class RegisterController extends BaseController
             'user_id' => $newUserId,
             'login' => $form->login,
             'credential' => '',
+            'minPasswordLength' => $minPasswordLength,
             'role' => $form->login === 'admin' ? 1 : 0
         ])
             ->createPasswordHash($newUserId, $form->password, true);

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    M.AutoInit();
+
     $('#changePassword').on('submit', function () {
         const changeButton = $(this).find('button');
         const oldPassword = $(this).find('#old_password');

@@ -72,7 +72,7 @@ class AuthController extends BaseController
 
         if (PasswordManager::load()->isPasswordCorrect(AccountManager::getUserId(), $form->old_password)) {
             return $this->json([
-                'ok' => (int) PasswordManager::load()
+                'ok' => PasswordManager::load()
                                 ->createPasswordHash(AccountManager::getUserId(), $form->password, true)
             ]);
         } else {

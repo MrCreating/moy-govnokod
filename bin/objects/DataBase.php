@@ -130,5 +130,17 @@ class DataBase extends BaseObject
             return isset($item[$field]);
         }));
     }
+
+    /**
+     * @return array
+     */
+    public function all (?string $updateKey = NULL, $updateValue = NULL): array
+    {
+        if (!is_null($updateKey)) {
+            $this->contents[$updateKey] = $updateValue;
+        }
+
+        return $this->contents;
+    }
 }
 ?>

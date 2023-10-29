@@ -22,15 +22,16 @@ class AccountManager extends DataBase
         return true;
     }
 
-    public static function getUser (): ?array
+    public static function getUser (?int $userId = NULL): ?array
     {
-        if (self::getUserId() === 0) {
+        $findUserId = $userId === NULL ? self::getUserId() : $userId;
+        if (is_null($findUserId) || $findUserId === 0) {
             return null;
         }
 
         $db = new self('users');
 
-        $data = $db->findBy('user_id', self::getUserId());
+        $data = $db->findBy('user_id', $findUserId);
 
         return $data[0] ?? null;
     }
