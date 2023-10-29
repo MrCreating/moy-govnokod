@@ -6,12 +6,17 @@ use l\objects\AccountManager;
 use l\objects\BaseController;
 use l\objects\DataBase;
 use l\objects\Form;
+use l\objects\PasswordManager;
 
 class AdminController extends BaseController
 {
     private array $errors = [
         '-1' => 'У Вас нет прав доступа к разделу',
-        '-2' => 'Минимальная длина пароля не должна быть отрицательной'
+        '-2' => 'Минимальная длина пароля не должна быть отрицательной',
+        '-3' => 'Не указан пользователь для редактирования',
+        '-4' => 'Не указана роль пользователя',
+        '-5' => 'Не указана минимальная длина пароля для пользователя',
+        '-6' => 'В пароле должен быть хотя бы 1 символ'
     ];
 
     function index(): string
@@ -49,6 +54,9 @@ class AdminController extends BaseController
         return $this->json(['ok' => 1]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function edit (): string
     {
         if (!AccountManager::permitted(1)) {
@@ -67,5 +75,49 @@ class AdminController extends BaseController
             'user' => AccountManager::getUser(),
             'editUser' => $user
         ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function updateUserInfo (): string
+    {
+        if (!AccountManager::permitted(1)) {
+            return $this->json(['error' => $this->errors['-1']]);
+        }
+
+        $newUserSettings = Form::load();
+
+        if (empty($newUserSettings->user_id)) {
+            return $this->json(['error' => $this->errors['-3']]);
+        }
+
+        $userRole = empty($newUserSettings->user_role) || $newUserSettings->user_role < 0 ? 0 : $newUserSettings->user_role;
+        if ($userRole >= 1) {
+            $userRole = 1;
+        }
+
+        if (empty($newUserSettings->min_password_length)) {
+            return $this->json(['error' => $this->errors['-5']]);
+        }
+
+        if ((int)$newUserSettings->min_password_length <= 1) {
+            return $this->json(['error' => $this->errors['-6']]);
+        }
+
+        $user = AccountManager::getUser($newUserSettings->user_id);
+        $pm = new PasswordManager();
+
+        $pm->updateItemBy('minPasswordLength', $newUserSettings->min_password_length, [
+            'user_id' => $user['user_id']
+        ])->updateItemBy('role', $userRole, [
+            'user_id' => $user['user_id']
+        ]);
+
+        if (!empty($newUserSettings->new_password)) {
+            $pm->createPasswordHash($user['user_id'], $newUserSettings->new_password, true);
+        }
+
+        return $this->json(['ok' => 1]);
     }
 }

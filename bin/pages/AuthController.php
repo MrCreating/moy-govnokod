@@ -4,6 +4,7 @@ namespace l\pages;
 
 use l\objects\AccountManager;
 use l\objects\BaseController;
+use l\objects\DataBase;
 use l\objects\Form;
 use l\objects\LoginForm;
 use l\objects\PasswordManager;
@@ -14,7 +15,8 @@ class AuthController extends BaseController
         '1' => 'Заполните все поля',
         '2' => 'Неверный логин или пароль',
         '3' => 'Пароли не совпадают',
-        '4' => 'Старый пароль некорректен'
+        '4' => 'Старый пароль некорректен',
+        '5' => 'Минимальная длина пароля должна быть %i символов. У вас %s символов'
     ];
 
     /**
@@ -71,6 +73,14 @@ class AuthController extends BaseController
         }
 
         if (PasswordManager::load()->isPasswordCorrect(AccountManager::getUserId(), $form->old_password)) {
+            $user = AccountManager::getUser();
+            $minPasswordLength = (int) $user['minPasswordLength'];
+
+            if (($passwordLength = strlen($form->password)) < $minPasswordLength) {
+                $errorText = str_replace(['%i', '%s'], [$minPasswordLength, $passwordLength], $this->errors['5']);
+                return $this->json(['error' => $errorText]);
+            }
+
             return $this->json([
                 'ok' => PasswordManager::load()
                                 ->createPasswordHash(AccountManager::getUserId(), $form->password, true)

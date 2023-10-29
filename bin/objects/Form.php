@@ -17,13 +17,18 @@ class Form extends BaseObject
         $string = explode("?", $_SERVER["REQUEST_URI"]);
         $parseString = $string[1] ?? '';
 
-        if (empty($parseString) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        parse_str($parseString, $_REQUEST);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $parseString = file_get_contents('php://input');
+            parse_str($parseString, $postData);
+            $_REQUEST = array_merge($_REQUEST, $postData);
         }
 
-        parse_str($parseString, $_REQUEST);
         $data = array_merge($_REQUEST, array_merge($_GET, $_POST));
 
-        return new self($data);
+        return new self(array_filter($data, function ($item) {
+            return !empty($item);
+        }));
     }
 }

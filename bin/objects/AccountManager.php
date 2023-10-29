@@ -93,6 +93,7 @@ class AccountManager extends DataBase
         }
 
         $user = self::getUser();
+
         if (!$user) {
             return false;
         }
