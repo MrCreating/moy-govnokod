@@ -58,8 +58,12 @@ class RegisterController extends BaseController
             return $this->redirect('/register?err=2');
         }
 
-        $projectSettings = (new DataBase('settings'))->all();
-        $minPasswordLength = (int) $projectSettings['min_password_length'];
+        $projectSettings = (new DataBase('settings'));
+        if (!isset($projectSettings->all()['min_password_length'])) {
+            $projectSettings->all('min_password_length', 1);
+        }
+
+        $minPasswordLength = (int) $projectSettings->all()['min_password_length'];
 
         if (strlen($form->password) < $minPasswordLength) {
             return $this->redirect('/register?err=5&i=' . $minPasswordLength . '&s=' . strlen($form->password));

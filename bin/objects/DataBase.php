@@ -9,11 +9,13 @@ namespace l\objects;
 
 class DataBase extends BaseObject
 {
-    private string $dbName = '';
+    protected string $dbName = '';
 
     private string $filePath = '';
 
     private array $contents = [];
+
+    private EncryptManager $encryptManager;
 
     /**
      * @param string $dbName
@@ -35,7 +37,9 @@ class DataBase extends BaseObject
         }
 
         $this->filePath = $file;
-        $this->contents = (array) json_decode(file_get_contents($this->filePath), true);
+        $this->dbName = $dbName;
+        $this->encryptManager = EncryptManager::get($this->filePath);
+        $this->contents = (array) json_decode($this->encryptManager->decryptFile(), true);
     }
 
     /**
@@ -43,9 +47,9 @@ class DataBase extends BaseObject
      */
     public function __destruct ()
     {
-        if (file_exists($this->filePath)) {
-            file_put_contents($this->filePath, json_encode($this->contents));
-        }
+        $finalData = json_encode($this->contents);
+
+        $this->encryptManager->encryptData($finalData);
     }
 
     /**
@@ -138,6 +142,7 @@ class DataBase extends BaseObject
     {
         if (!is_null($updateKey)) {
             $this->contents[$updateKey] = $updateValue;
+            return $this->contents;
         }
 
         return $this->contents;

@@ -13,6 +13,7 @@ services:
       - .env
     volumes:
       - ./:/project
+      - ./data:/project/data:Z
     links:
       - memcached
   nginx:
